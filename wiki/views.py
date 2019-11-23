@@ -1,6 +1,9 @@
 from django.shortcuts import render
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import render, redirect
 
 from wiki.models import Page
 
@@ -21,6 +24,18 @@ class SignUpView(ListView):
         # pages = self.get_queryset().all()
         return render(request, 'signup.html', {
         })
+    def post(self, request):
+      form = UserCreationForm(request.POST)
+      if form.is_valid():
+        form.save()
+        username = form.cleaned_data.get('username')
+        raw_password = form.cleaned_data.get('password1')
+        user = authenticate(username=username, password=raw_password)
+        login(request, user)
+        return redirect('home')
+      else:
+          form = UserCreationForm()
+      return render(request, 'signup.html', {'form': form})
 
 
 class PageListView(ListView):
@@ -44,3 +59,17 @@ class PageDetailView(DetailView):
         return render(request, 'page.html', {
           'page': page
         })
+
+def signup(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
+            login(request, user)
+            return redirect('home')
+    else:
+        form = UserCreationForm()
+    return render(request, 'signup.html', {'form': form})
