@@ -4,6 +4,24 @@ from django.views.generic.detail import DetailView
 
 from wiki.models import Page
 
+class LoginView(ListView):
+    model = Page
+
+    def get(self, request):
+        """ GET a list of Pages. """
+        # pages = self.get_queryset().all()
+        return render(request, 'login.html', {
+        })
+
+class SignUpView(ListView):
+    model = Page
+
+    def get(self, request):
+        """ GET a list of Pages. """
+        # pages = self.get_queryset().all()
+        return render(request, 'signup.html', {
+        })
+
 
 class PageListView(ListView):
     """ Renders a list of all Pages. """
